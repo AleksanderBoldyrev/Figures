@@ -7,7 +7,7 @@
 class Figure
 {
 protected:
-    QPoint upp_left, size, upp_right;
+    QPoint upp_left, size;
     QColor color;
 public:
     Figure(const QPoint& ul, const QPoint& s, const QColor& c):
@@ -45,17 +45,21 @@ public:
 
 class SomeTriangle: public Figure
 {
+    QPoint upp_right;
+
 public:
-    SetSize(QPoint& q);
-
-    //SomeTriangle(const QPoint& ul, const QPoint& s, const QPoint& r, const QColor& c): Figure(ul, s, r, c) {}
-    SomeTriangle(const QPoint& ul, const QPoint& s, const QColor& c): Figure(ul, s, c) {
-
+    SomeTriangle(const QPoint& ul, const QPoint& s, const QColor& c): Figure(ul, s, c)
+    {
         upp_right.setX(s.x());
         upp_right.setY(s.y());
     }
 
-    //virtual void resize(const QPoint& lr);
+    SomeTriangle(const QPoint& ul, const QPoint& ur, const QPoint& s, const QColor& c): Figure(ul, s, c)
+    {
+        upp_right.setX(ur.x());
+        upp_right.setY(ur.y());
+    }
+    void fill(QDomDocument& doc, QDomElement &elem);
     virtual void paint(QPainter& painter);
     virtual QDomElement toDomElement(QDomDocument& doc);
 };

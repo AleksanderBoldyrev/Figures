@@ -34,8 +34,6 @@ void Figure::fill(QDomDocument& doc, QDomElement &elem)
     elem.appendChild(ulElem);
     QDomElement sizeElem = pointToElement(size, "size", doc);
     elem.appendChild(sizeElem);
-    QDomElement sizeElem2 = pointToElement(upp_right, "upp_right", doc);
-    elem.appendChild(sizeElem2);
     QDomAttr attrred = doc.createAttribute("red");
     attrred.setValue(QString::number(color.red()));
     elem.setAttributeNode(attrred);
@@ -60,10 +58,10 @@ Figure* Figure::createFigure(QDomElement &elem)
 {
     QDomElement ulElem = elem.firstChildElement("upper_left");
     QPoint ul = pointFromElement(ulElem);
+    QDomElement urElem = elem.firstChildElement("upper_right");
+    QPoint ur = pointFromElement(urElem);
     QDomElement szElem = elem.firstChildElement("size");
     QPoint sz = pointFromElement(szElem);
-    QDomElement urElem = elem.firstChildElement("upp_right");
-    QPoint ur = pointFromElement(urElem);
     int red = elem.attribute("red").toInt();
     int green = elem.attribute("green").toInt();
     int blue = elem.attribute("blue").toInt();
@@ -82,9 +80,7 @@ Figure* Figure::createFigure(QDomElement &elem)
     }
     else if (elem.tagName()=="sometriangle")
     {
-        SomeTriangle* tr = new SomeTriangle(ul, sz, c);
-        tr->SetUppRigth(ur);
-        return new SomeTriangle(ul, sz, c);
+        return new SomeTriangle(ul, ur, sz, c);
     }
     else
     {
@@ -127,6 +123,25 @@ void SomeTriangle::paint(QPainter &painter)
     upp_right.setY(lr.y());
 }*/
 
+void SomeTriangle::fill(QDomDocument& doc, QDomElement &elem)
+{
+    QDomElement ulElem = pointToElement(upp_left, "upper_left", doc);
+    elem.appendChild(ulElem);
+    QDomElement ulElem2 = pointToElement(upp_right, "upper_right", doc);
+    elem.appendChild(ulElem2);
+    QDomElement sizeElem = pointToElement(size, "size", doc);
+    elem.appendChild(sizeElem);
+    QDomAttr attrred = doc.createAttribute("red");
+    attrred.setValue(QString::number(color.red()));
+    elem.setAttributeNode(attrred);
+    QDomAttr attrgreen = doc.createAttribute("green");
+    attrgreen.setValue(QString::number(color.green()));
+    elem.setAttributeNode(attrgreen);
+    QDomAttr attrblue = doc.createAttribute("blue");
+    attrblue.setValue(QString::number(color.blue()));
+    elem.setAttributeNode(attrblue);
+}
+
 QDomElement Square::toDomElement(QDomDocument &doc)
 {
     QDomElement elem = doc.createElement("square");
@@ -151,6 +166,6 @@ QDomElement Triangle::toDomElement(QDomDocument &doc)
 QDomElement SomeTriangle::toDomElement(QDomDocument &doc)
 {
     QDomElement elem = doc.createElement("sometriangle");
-    fill(doc, elem);
+    SomeTriangle::fill(doc, elem);
     return elem;
 }
